@@ -1,0 +1,42 @@
+name: Mastodon Welcome Bot
+
+on:
+  schedule:
+    - cron: "0 8,14,20 * * *" # 8am, 2pm, 8pm UTC daily
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  welcome-new-users:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Swift
+        uses: swift-actions/setup-swift@v2
+        with:
+          swift-version: "5.9"
+
+      - name: Make script executable
+        run: chmod +x WelcomeBot
+
+      - name: Run Mastodon Welcome Bot
+        env:
+          MASTODON_BASE_URL: ${{ secrets.MASTODON_BASE_URL }}
+          MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}
+        run: swift WelcomeBot
+
+      - name: Commit updated timestamp
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add last_check_timestamp.txt
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update last check timestamp [skip ci]"
+            git push
+          fi
