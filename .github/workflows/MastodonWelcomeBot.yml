@@ -18,16 +18,16 @@ jobs:
       - name: Setup Swift
         uses: swift-actions/setup-swift@v2
         with:
-          swift-version: "5.9"
+          swift-version: "6.1.0"
 
-      - name: Make script executable
-        run: chmod +x WelcomeBot
+      - name: Verify Swift Installation
+        run: swift --version
 
       - name: Run Mastodon Welcome Bot
         env:
           MASTODON_BASE_URL: ${{ secrets.MASTODON_BASE_URL }}
           MASTODON_ACCESS_TOKEN: ${{ secrets.MASTODON_ACCESS_TOKEN }}
-        run: swift WelcomeBot
+        run: swift WelcomeBot.swift
 
       - name: Commit updated timestamp
         run: |
