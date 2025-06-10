@@ -120,6 +120,9 @@ class MastodonWelcomeBot {
 
         let allAccounts = try JSONDecoder().decode([MastodonAccount].self, from: data)
 
+        // Sort accounts oldest to newest by creation date so the last timestamp is the newest
+        allAccounts.sortedBy { $0.createdAt < $1.createdAt }
+
         // Filter for accounts created after our last check and are approved
         let sinceDate = dateFormatter.date(from: since) ?? {
             // Try fallback parsing without fractional seconds
