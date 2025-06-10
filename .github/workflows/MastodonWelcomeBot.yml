@@ -2,7 +2,7 @@ name: Mastodon Welcome Bot
 
 on:
   schedule:
-    - cron: "0 8,14,20 * * *" # 8am, 2pm, 8pm UTC daily
+    - cron: "0 2 */2 * *" # 2am UTC every 2 days
   workflow_dispatch: # Allows manual triggering
 
 jobs:
