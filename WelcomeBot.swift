@@ -130,7 +130,7 @@ class MastodonWelcomeBot {
         let allAccounts = try JSONDecoder().decode([MastodonAccount].self, from: data)
 
         // Sort accounts oldest to newest by creation date so the last timestamp is the newest
-        allAccounts.sortedBy { $0.createdAt < $1.createdAt }
+        let sortedAccounts = allAccounts.sorted(by: { $0.createdAt < $1.createdAt })
 
         // Filter for accounts created after our last check and are approved
         let sinceDate =
@@ -149,7 +149,7 @@ class MastodonWelcomeBot {
         print("Found \(allAccounts.count) total accounts")
         print("Parsed since date '\(since)' as: \(sinceDate)")
 
-        let newAccounts = allAccounts.filter { account in
+        let newAccounts = sortedAccounts.filter { account in
             guard account.approved else { return false }
 
             if let accountDate = dateFormatter.date(from: account.createdAt) {
