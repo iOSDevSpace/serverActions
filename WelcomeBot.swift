@@ -1,6 +1,7 @@
 import Foundation
+
 #if canImport(FoundationNetworking)
-import FoundationNetworking
+    import FoundationNetworking
 #endif
 
 struct MastodonAccount: Codable {
@@ -41,7 +42,11 @@ class MastodonWelcomeBot {
                 "Missing required environment variables: MASTODON_BASE_URL, MASTODON_ACCESS_TOKEN")
         }
 
-        self.baseURL = baseURL.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        var cleanBaseURL = baseURL.trimmingCharacters(in: .whitespacesAndNewlines)
+        while cleanBaseURL.hasSuffix("/") {
+            cleanBaseURL.removeLast()
+        }
+        self.baseURL = cleanBaseURL
         self.accessToken = accessToken
     }
 
